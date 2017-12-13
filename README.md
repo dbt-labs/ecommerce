@@ -1,4 +1,4 @@
-### dbt models for [your org/project name]
+# Fishtown Analytics Ecommerce Package
 
 ---
 - [What is dbt](https://dbt.readme.io/docs/overview)?
