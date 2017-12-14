@@ -9,7 +9,3 @@ target-path: "target"
 clean-targets:
     - "target"
     - "dbt_modules"
-
-models:
-    vars:
-        orders_table: "{{ref('orders')}}"
