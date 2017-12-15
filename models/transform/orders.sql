@@ -4,7 +4,7 @@ with orders as (
 
 ),
 
-final as (
+order_numbers as (
 
     select
 
@@ -17,6 +17,21 @@ final as (
 
     from orders
 
+),
+
+new_repeat as (
+
+    select
+
+        *,
+
+        case
+            when order_number = 1
+                then 'new'
+            else 'repeat'
+        end as new_or_repeat
+
+    from order_numbers
 )
 
-select * from final
+select * from new_repeat
