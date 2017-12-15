@@ -19,7 +19,7 @@ order_numbers as (
 
 ),
 
-new_repeat as (
+final as (
 
     select
 
@@ -34,4 +34,4 @@ new_repeat as (
     from order_numbers
 )
 
-select * from new_repeat
+select * from final
