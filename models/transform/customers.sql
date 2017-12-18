@@ -21,10 +21,10 @@ joined as (
 
 ),
 
-first_orders as (
+final as (
 
     select * from joined
     where order_number = 1
 )
 
-select * from first_orders
+select * from final 
