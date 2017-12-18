@@ -1,5 +1,5 @@
 view: addresses {
-  sql_table_name: dbt_elouie.addresses ;;
+  sql_table_name: analytics.addresses ;;
 
   dimension: address_id {
     type: number

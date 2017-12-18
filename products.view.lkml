@@ -1,5 +1,5 @@
 view: products {
-  sql_table_name: dbt_elouie.products ;;
+  sql_table_name: analytics.products ;;
 
   dimension: product_id {
     type: number

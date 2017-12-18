@@ -1,5 +1,5 @@
 view: order_items {
-  sql_table_name: dbt_elouie.order_items ;;
+  sql_table_name: analytics.order_items ;;
 
   dimension: order_item_id {
     type: number

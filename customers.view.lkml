@@ -1,5 +1,5 @@
 view: customers {
-  sql_table_name: dbt_elouie.customers ;;
+  sql_table_name: analytics.customers ;;
 
   dimension: customer_id {
     type: number
