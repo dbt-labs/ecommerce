@@ -10,11 +10,13 @@ view: order_items {
 # ------------------------------------------------ Foreign Keys
   dimension: order_id {
     type: number
+    hidden: yes
     sql: ${TABLE}.order_id ;;
   }
 
   dimension: product_id {
     type: number
+    hidden: yes
     sql: ${TABLE}.product_id ;;
   }
 
@@ -32,6 +34,12 @@ view: order_items {
   dimension: price {
     type: number
     sql: ${TABLE}.price ;;
+    value_format_name: usd
+  }
+
+  dimension: total {
+    type: number
+    sql: ${price} * ${quantity} ;;
   }
 
 # ------------------------------------------------ Measures
@@ -39,6 +47,12 @@ view: order_items {
   measure: count {
     type: count
     drill_fields: []
+  }
+
+  measure: total_revenue {
+    type: sum
+    sql: ${total} ;;
+    value_format_name: usd_0
   }
 
 }

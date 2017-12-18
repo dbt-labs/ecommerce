@@ -3,16 +3,16 @@ view: products {
 
   dimension: product_id {
     type: number
-    sql: ${TABLE}.order_item_id ;;
+    sql: ${TABLE}.product_id ;;
     primary_key: yes
     hidden: yes
   }
 
 # ------------------------------------------------ Product Info
 
-  dimension: product_title {
+  dimension: title {
     type: string
-    sql: ${TABLE}.product_title ;;
+    sql: ${TABLE}.title ;;
   }
 
   dimension: product_type {

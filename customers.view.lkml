@@ -3,7 +3,7 @@ view: customers {
 
   dimension: customer_id {
     type: number
-    sql: ${TABLE}.address_id ;;
+    sql: ${TABLE}.customer_id ;;
     primary_key: yes
     hidden: yes
   }
@@ -31,14 +31,51 @@ view: customers {
 
 # ------------------------------------------------ Dates
 
-  dimension: created_at {
-    type: date
+  dimension_group: created {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
     sql: ${TABLE}.created_at ;;
   }
-
-  dimension: updated_at {
-    type: date
+  dimension_group: updated {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
     sql: ${TABLE}.updated_at ;;
+  }
+
+  dimension_group: first_order {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.first_order_date ;;
+  }
+
+  dimension: customer_first_order_month {
+    type: date
+    sql:date_trunc('month', ${first_order_date}) ;;
+    hidden: yes
   }
 
 # ------------------------------------------------ Measures
