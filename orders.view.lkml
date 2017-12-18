@@ -1,5 +1,5 @@
 view: orders {
-  sql_table_name: dbt_jthandy.orders_xf ;;
+  sql_table_name: analytics.orders ;;
 
   dimension: order_id {
     type: number
@@ -12,16 +12,19 @@ view: orders {
 
   dimension: billing_address_id {
     type: number
+    hidden: yes
     sql: ${TABLE}.billing_address_id ;;
   }
 
   dimension: customer_id {
     type: number
+    hidden: yes
     sql: ${TABLE}.customer_id ;;
   }
 
   dimension: shipping_address_id {
     type: number
+    hidden: yes
     sql: ${TABLE}.shipping_address_id ;;
   }
 
@@ -62,11 +65,47 @@ view: orders {
     sql: ${TABLE}.order_number ;;
   }
 
+  dimension: total {
+    type: number
+    sql: ${TABLE}.total ;;
+  }
+
+  dimension: new_vs_repeat {
+    type: string
+    sql: ${TABLE}.new_or_repeat ;;
+  }
+
+  dimension: customer_first_order_month {
+    type: string
+    sql:  ${customers.customer_first_order_month} ;;
+  }
+
+  dimension: months_from_start {
+    type: number
+    sql: datediff(month, ${customers.customer_first_order_month}, ${orders.created_date}) ;;
+  }
 
   # ------------------------------------------------ Measures
 
   measure: count {
     type: count
     drill_fields: []
+  }
+
+  measure: customers_count {
+    type: count_distinct
+    sql: ${customer_id} ;;
+  }
+
+  measure: total_revenue {
+    type: sum
+    sql: ${total} ;;
+    value_format_name: usd
+  }
+
+  measure: avg_order_value {
+    type: average
+    sql: ${TABLE}.total ;;
+    value_format_name: usd
   }
 }
