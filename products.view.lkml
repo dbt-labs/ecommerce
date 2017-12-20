@@ -32,9 +32,4 @@ view: products {
 
 # ------------------------------------------------ Measures
 
-  measure: count {
-    type: count
-    drill_fields: []
-  }
-
 }

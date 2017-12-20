@@ -59,11 +59,4 @@ view: addresses {
     type: string
     sql: ${TABLE}.phone ;;
   }
-
-  # ------------------------------------------------ Measures
-
-  measure: count {
-    type: count
-    drill_fields: []
-  }
 }

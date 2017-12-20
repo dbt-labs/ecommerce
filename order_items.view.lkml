@@ -39,14 +39,14 @@ view: order_items {
 
   dimension: total {
     type: number
-    sql: ${price} * ${quantity} ;;
+    sql: ${TABLE}.total;;
   }
 
 # ------------------------------------------------ Measures
 
-  measure: count {
-    type: count
-    drill_fields: []
+  measure: qty_ordered {
+    type: sum
+    sql: ${quantity} ;;
   }
 
   measure: total_revenue {
