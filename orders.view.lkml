@@ -58,6 +58,20 @@ view: orders {
     sql: ${TABLE}.updated_at ;;
   }
 
+  dimension_group: first_order {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.first_order_date ;;
+  }
+
   # ------------------------------------------------ Other
 
   dimension: order_number {
@@ -75,14 +89,9 @@ view: orders {
     sql: ${TABLE}.new_or_repeat ;;
   }
 
-  dimension: customer_first_order_month {
-    type: string
-    sql:  ${customers.customer_first_order_month} ;;
-  }
-
   dimension: months_from_start {
     type: number
-    sql: datediff(month, ${customers.customer_first_order_month}, ${orders.created_date}) ;;
+    sql: ${TABLE}.months_from_start ;;
   }
 
   # ------------------------------------------------ Measures
