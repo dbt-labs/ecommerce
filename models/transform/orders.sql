@@ -19,7 +19,7 @@ order_numbers as (
 
 ),
 
-final as (
+new_repeat_field as (
 
     select
 
@@ -32,6 +32,31 @@ final as (
         end as new_or_repeat
 
     from order_numbers
+),
+
+first_orders as (
+
+    select
+
+        *,
+        min(created_at) over
+            (partition by customer_id
+                order by created_at
+                    rows between unbounded preceding and unbounded following)
+        as first_order_date
+
+    from new_repeat_field
+
+),
+
+order_months as (
+
+    select
+
+        *,
+        datediff(month, first_order_date, created_at) as months_from_start
+
+    from first_orders
 )
 
-select * from final
+select * from order_months

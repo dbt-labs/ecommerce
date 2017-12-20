@@ -1,0 +1,39 @@
+addresses:
+    constraints:
+        not_null:
+            - address_id
+        unique:
+            - address_id
+
+customers:
+    constraints:
+        not_null:
+            - customer_id
+        unique:
+            - customer_id
+
+order_items:
+    constraints:
+        not_null:
+            - order_item_id
+        unique:
+            - order_item_id
+        relationships:
+            - {from: order_id, to: ref('orders'), field: order_id}
+            - {from: product_id, to: ref('products'), field: product_id}
+
+orders:
+    constraints:
+        not_null:
+            - order_id
+        unique:
+            - order_id
+        relationships:
+            - {from: customer_id, to: ref('customers'), field: customer_id}
+
+products:
+    constraints:
+        not_null:
+            - product_id
+        unique:
+            - product_id

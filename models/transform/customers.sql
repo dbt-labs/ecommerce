@@ -10,21 +10,23 @@ orders as (
 
 ),
 
-joined as (
+first_orders as (
 
-    select
-        customers.*,
-        orders.order_number,
-        orders.created_at as first_order_date
-    from customers
-    left join orders using (customer_id)
+    select * from orders
+    where order_number = 1
 
 ),
 
-first_orders as (
+joined as (
 
-    select * from joined
-    where order_number = 1
+    select
+    
+        customers.*,
+        first_orders.created_at as first_order_date
+
+    from customers
+    left join first_orders using (customer_id)
+
 )
 
-select * from first_orders
+select * from joined
