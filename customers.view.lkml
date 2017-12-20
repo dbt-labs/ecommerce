@@ -31,7 +31,7 @@ view: customers {
 
 # ------------------------------------------------ Dates
 
-  dimension_group: updated {
+  dimension_group: created {
     type: time
     timeframes: [
       raw,
@@ -42,7 +42,7 @@ view: customers {
       quarter,
       year
     ]
-    sql: ${TABLE}.updated_at ;;
+    sql: ${TABLE}.created_at ;;
   }
 
   dimension_group: first_order {
