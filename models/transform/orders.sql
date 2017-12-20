@@ -39,6 +39,7 @@ first_orders as (
     select
 
         *,
+
         min(created_at) over
             (partition by customer_id
                 order by created_at
@@ -54,6 +55,7 @@ order_months as (
     select
 
         *,
+
         datediff(month, first_order_date, created_at) as months_from_start
 
     from first_orders
