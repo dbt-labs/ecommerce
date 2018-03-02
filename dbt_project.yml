@@ -1,4 +1,4 @@
-name: 'fishtown_analytics_ecommerce'
+name: 'ecommerce'
 version: '0.1'
 source-paths: ["models"]
 analysis-paths: ["analysis"]

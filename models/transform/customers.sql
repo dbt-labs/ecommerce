@@ -1,12 +1,12 @@
 with customers as (
 
-    select * from {{var('customers_table')}}
+    select * from {{var('CUSTOMERS_TABLE')}}
 
 ),
 
 orders as (
 
-    select * from {{ref('orders')}}
+    select * from {{ref('ORDERS')}}
 
 ),
 
@@ -20,7 +20,7 @@ first_orders as (
 joined as (
 
     select
-    
+
         customers.*,
         first_orders.created_at as first_order_date
 

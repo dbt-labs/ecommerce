@@ -1,1 +1,1 @@
-select * from {{var('addresses_table')}}
+select * from {{var('ADDRESSES_TABLE')}}
