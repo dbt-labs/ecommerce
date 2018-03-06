@@ -1,1 +1,1 @@
-select * from {{var('PRODUCTS_TABLE')}}
+select * from {{var('products_table')}}

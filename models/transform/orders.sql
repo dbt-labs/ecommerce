@@ -1,6 +1,6 @@
 with orders as (
 
-    select * from {{var('ORDERS_TABLE')}}
+    select * from {{var('orders_table')}}
 
 ),
 
