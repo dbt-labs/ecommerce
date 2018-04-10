@@ -52,7 +52,9 @@ order_numbers as (
         {{ order_seq_number }} as order_number,
 
         case
-            when paid_order = 1 then {{ order_seq_number }}
+            when paid_order = 1 then row_number() over (
+                    partition by email, paid_order
+                    order by created_at)
             else null
         end as paid_order_number
 
