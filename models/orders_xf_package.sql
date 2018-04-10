@@ -112,39 +112,37 @@ calculation_2 as (
             -- orders, regardless of whether order was paid or not.
         -- Other fields in this CTE are for paid orders only.
 
-            min(created_at) over
-                (partition by customer_id
-                    order by created_at
-                        rows between unbounded preceding and unbounded following)
-            as first_order_date,
+        min(created_at) over
+            (partition by customer_id
+                order by created_at
+                    rows between unbounded preceding and unbounded following)
+        as first_order_date,
 
         coalesce(first_paid_order_date_calc,
             max(first_paid_order_date_calc) over (
                 partition by email order by created_at
                 rows between unbounded preceding and unbounded following))
-            as first_paid_order_date,
+        as first_paid_order_date,
 
-            count(*) over (partition by email)
-                as lifetime_placed_orders,
+        count(*) over (partition by email)
+            as lifetime_placed_orders,
 
-            coalesce(lifetime_paid_orders_calc,
-                max(lifetime_paid_orders_calc) over (
-                    partition by email), 0)
-                as lifetime_paid_orders,
+        coalesce(lifetime_paid_orders_calc,
+            max(lifetime_paid_orders_calc) over (
+                partition by email), 0)
+            as lifetime_paid_orders,
 
-            coalesce(lifetime_paid_revenue_calc,
-                max(lifetime_paid_revenue_calc) over (
-                    partition by email), 0)
-                as lifetime_paid_revenue,
+        coalesce(lifetime_paid_revenue_calc,
+            max(lifetime_paid_revenue_calc) over (
+                partition by email), 0)
+            as lifetime_paid_revenue,
 
         case
             when created_at <= first_paid_order_date_calc then null
             else coalesce(previous_paid_order_date_calc,
                 lag(previous_paid_order_date_calc, 1) ignore nulls over (
                 partition by email order by created_at desc))
-        end as previous_paid_order_date,
-
-
+        end as previous_paid_order_date
 
     from calculation_1
 ),
@@ -159,14 +157,17 @@ date_diffs as (
             when created_at < first_paid_order_date then null
             else datediff(month, first_paid_order_date, created_at)
         end as months_from_first_paid_order,
+
         case
             when created_at < first_paid_order_date then null
             else datediff(week, first_paid_order_date, created_at)
         end as weeks_from_first_paid_order,
+
         case
             when created_at < first_paid_order_date then null
             else datediff(day, first_paid_order_date, created_at)
         end as days_from_first_paid_order,
+
         case
             when created_at <= first_paid_order_date then null
             else datediff(day, previous_paid_order_date, created_at)
@@ -181,9 +182,10 @@ date_diffs as (
 ),
 
 final_calculations as (
+
     select
 
-    *,
+        *,
 
         case when lifetime_paid_orders = 1 then 'single_purchaser'
             when lifetime_paid_orders > 1 then 'repeat_purchaser'
