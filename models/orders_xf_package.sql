@@ -52,7 +52,8 @@ order_numbers as (
         {{ order_seq_number }} as order_seq_number,
 
         case
-            when paid_order = 1 then row_number() over (
+            when paid_order = 1
+                then row_number() over (
                     partition by email, paid_order
                     order by created_at)
             else null
@@ -96,17 +97,7 @@ calculation_1 as (
             when paid_order = 1 then sum(total_price) over (
                 partition by email, paid_order)
                 else null
-        end as lifetime_paid_revenue_calc,
-
-    -- next 2 fields calculated regardless of whether an order was paid or not
-
-        min(created_at) over
-            (partition by customer_id
-                order by created_at
-                    rows between unbounded preceding and unbounded following)
-        as first_order_date,
-
-        count(*) over (partition by email, paid_order) as lifetime_placed_orders
+        end as lifetime_paid_revenue_calc
 
     from order_numbers
 
@@ -117,12 +108,34 @@ calculation_2 as (
     select
 
         *,
+        -- first_order_date and lifetime_placed_orders calculated using all
+            -- orders, regardless of whether order was paid or not.
+        -- Other fields in this CTE are for paid orders only.
+
+            min(created_at) over
+                (partition by customer_id
+                    order by created_at
+                        rows between unbounded preceding and unbounded following)
+            as first_order_date,
 
         coalesce(first_paid_order_date_calc,
             max(first_paid_order_date_calc) over (
                 partition by email order by created_at
                 rows between unbounded preceding and unbounded following))
             as first_paid_order_date,
+
+            count(*) over (partition by email)
+                as lifetime_placed_orders,
+
+            coalesce(lifetime_paid_orders_calc,
+                max(lifetime_paid_orders_calc) over (
+                    partition by email), 0)
+                as lifetime_paid_orders,
+
+            coalesce(lifetime_paid_revenue_calc,
+                max(lifetime_paid_revenue_calc) over (
+                    partition by email), 0)
+                as lifetime_paid_revenue
 
         case
             when created_at <= first_paid_order_date_calc then null
@@ -131,15 +144,7 @@ calculation_2 as (
                 partition by email order by created_at desc))
         end as previous_paid_order_date,
 
-        coalesce(lifetime_paid_orders_calc,
-            max(lifetime_paid_orders_calc) over (
-                partition by email), 0)
-            as lifetime_paid_orders,
 
-        coalesce(lifetime_paid_revenue_calc,
-            max(lifetime_paid_revenue_calc) over (
-                partition by email), 0)
-            as lifetime_paid_revenue
 
     from calculation_1
 ),
