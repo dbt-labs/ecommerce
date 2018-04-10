@@ -135,7 +135,7 @@ calculation_2 as (
             coalesce(lifetime_paid_revenue_calc,
                 max(lifetime_paid_revenue_calc) over (
                     partition by email), 0)
-                as lifetime_paid_revenue
+                as lifetime_paid_revenue,
 
         case
             when created_at <= first_paid_order_date_calc then null
