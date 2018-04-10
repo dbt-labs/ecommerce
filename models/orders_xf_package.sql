@@ -49,7 +49,7 @@ order_numbers as (
 
         *,
 
-        {{ order_seq_number }} as order_number,
+        {{ order_seq_number }} as order_seq_number,
 
         case
             when paid_order = 1 then row_number() over (
