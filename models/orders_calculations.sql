@@ -18,7 +18,7 @@ fields as (
 
         case
             when financial_status ilike 'paid' and
-                cancelled_at is not null
+                cancelled_at is null
                 then 1
             else 0
         end as completed_order,
