@@ -174,7 +174,7 @@ date_diffs as (
         end as days_since_previous_paid_order,
 
         case
-            when created_at <= first_paid_order_date then null
+            when created_at < first_paid_order_date then null
             else datediff(day, first_paid_order_date, current_date)
         end as customer_age_days
 
