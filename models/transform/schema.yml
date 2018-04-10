@@ -30,17 +30,14 @@ orders_xf:
             - order_year
             - order_month
             - order_day_of_month
-            - paid_order
+            - completed_order
             - lifetime_placed_orders
-            - lifetime_paid_orders
-            - lifetime_paid_revenue
+            - lifetime_completed_orders
+            - lifetime_revenue
             - customer_type
-            - customer_first_30_day_paid_orders
-            - customer_first_30_day_revenue
-            - customer_first_60_day_paid_orders
-            - customer_first_60_day_revenue
-            - customer_first_90_day_paid_orders
-            - customer_first_90_day_revenue
+            - customer_first_30_day_completed_orders
+            - customer_first_60_day_completed_orders
+            - customer_first_90_day_completed_orders
         unique:
             - order_id
         relationships:
