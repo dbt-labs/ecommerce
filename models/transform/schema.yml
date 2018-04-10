@@ -31,7 +31,7 @@ orders_xf:
             - order_month
             - order_day_of_month
             - paid_order
-            - first_paid_order_date
+            - lifetime_placed_orders
             - lifetime_paid_orders
             - lifetime_paid_revenue
             - customer_type
