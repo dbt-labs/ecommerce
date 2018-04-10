@@ -108,7 +108,7 @@ calculation_2 as (
         -- Other fields in this CTE are for completed orders only.
 
         min(created_at) over
-            (partition by customer_id
+            (partition by email
                 order by created_at
                     rows between unbounded preceding and unbounded following)
         as first_order_date,
