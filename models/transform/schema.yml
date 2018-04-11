@@ -22,10 +22,22 @@ order_items:
             - {from: order_id, to: ref('orders'), field: order_id}
             - {from: product_id, to: ref('products'), field: product_id}
 
-orders:
+orders_xf:
     constraints:
         not_null:
             - order_id
+            - created_at
+            - order_year
+            - order_month
+            - order_day_of_month
+            - is_completed
+            - lifetime_placed_orders
+            - lifetime_completed_orders
+            - lifetime_revenue
+            - customer_type
+            - customer_first_30_day_completed_orders
+            - customer_first_60_day_completed_orders
+            - customer_first_90_day_completed_orders
         unique:
             - order_id
         relationships:
