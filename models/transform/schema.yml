@@ -30,7 +30,7 @@ orders_xf:
             - order_year
             - order_month
             - order_day_of_month
-            - completed_order
+            - is_completed
             - lifetime_placed_orders
             - lifetime_completed_orders
             - lifetime_revenue

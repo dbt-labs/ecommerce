@@ -16,8 +16,6 @@ fields as (
         split_part(split_part(created_at, '-' , 2),'-',1) as order_month,
         split_part(split_part(created_at, ' ' , 1),'-',3) as order_day_of_month,
 
-        {{completed_order(financial_status, ['paid', 'refunded'])}},
-
         case
             when {{ order_seq_number }} = 1
                 then 'new'
@@ -42,9 +40,9 @@ order_numbers as (
         {{ order_seq_number }} as order_seq_number,
 
         case
-            when completed_order = 1
+            when is_completed = 1
                 then row_number() over (
-                    partition by email, completed_order
+                    partition by email, is_completed
                     order by created_at)
             else null
         end as completed_order_number
@@ -54,7 +52,7 @@ order_numbers as (
 
 --the general idea for the next 2 CTEs is:
 --calculation_1 calculates fields using case when, null if order_completed = 0,
---calculation_2 calculates values where completed_order = 0 using coalesce
+--calculation_2 calculates values where is_completed = 0 using coalesce
 
 calculation_1 as (
 
@@ -63,29 +61,29 @@ calculation_1 as (
         *,
 
         case
-            when completed_order = 1
+            when is_completed = 1
                 then min(created_at) over (
-                    partition by email, completed_order order by created_at
+                    partition by email, is_completed order by created_at
                     rows between unbounded preceding and unbounded following)
             else null
         end as first_completed_order_date_calc,
 
         case
             when completed_order_number > 1 then lag(created_at, 1) over (
-                partition by email, completed_order order by created_at)
+                partition by email, is_completed order by created_at)
             when completed_order_number = 1 then null
             else null
         end as previous_completed_order_date_calc,
 
         case
-            when completed_order = 1 then count(*) over (
-                partition by email, completed_order)
+            when is_completed = 1 then count(*) over (
+                partition by email, is_completed)
                 else null
         end as lifetime_completed_orders_calc,
 
         case
-            when completed_order = 1 then sum(total_price) over (
-                partition by email, completed_order)
+            when is_completed = 1 then sum(total_price) over (
+                partition by email, is_completed)
                 else null
         end as lifetime_revenue_calc
 
@@ -183,7 +181,8 @@ final_calculations as (
         end as customer_type,
 
         sum(case
-                when days_from_first_completed_order <= 30 and completed_order = 1 then 1
+                when days_from_first_completed_order <= 30
+                    and is_completed = 1 then 1
                 else 0
             end) over(
                     partition by email order by created_at
@@ -191,7 +190,7 @@ final_calculations as (
         as customer_first_30_day_completed_orders,
 
         sum(case
-                when days_from_first_completed_order <= 30 and completed_order = 1
+                when days_from_first_completed_order <= 30 and is_completed = 1
                     then total_price
                 else 0
             end) over(
@@ -200,7 +199,7 @@ final_calculations as (
         as customer_first_30_day_revenue,
 
         sum(case
-                when days_from_first_completed_order <= 60 and completed_order = 1
+                when days_from_first_completed_order <= 60 and is_completed = 1
                     then 1
                 else 0
             end) over (
@@ -209,7 +208,7 @@ final_calculations as (
         as customer_first_60_day_completed_orders,
 
         sum(case
-                when days_from_first_completed_order <= 60 and completed_order = 1
+                when days_from_first_completed_order <= 60 and is_completed = 1
                     then total_price
                  else 0 end) over(
                      partition by email order by created_at
@@ -217,7 +216,7 @@ final_calculations as (
         as customer_first_60_day_revenue,
 
         sum(case
-                when days_from_first_completed_order <= 90 and completed_order = 1
+                when days_from_first_completed_order <= 90 and is_completed = 1
                     then 1
                 else 0
             end) over
@@ -226,7 +225,7 @@ final_calculations as (
         as customer_first_90_day_completed_orders,
 
         sum(case
-                when days_from_first_completed_order <= 90 and completed_order = 1
+                when days_from_first_completed_order <= 90 and is_completed = 1
                     then total_price
                 else 0
             end) over (
