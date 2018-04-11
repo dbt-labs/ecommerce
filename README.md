@@ -7,9 +7,10 @@ This package requires that you have [dbt-utils](https://github.com/fishtown-anal
 ## Required Columns
 
 Structure your orders model that feeds into the ecommerce package such that it has the following columns and column names:
-- entry created timestamp: **created_at**
+- created at timestamp: **created_at**
+- column that is ***not*** null if the order has been cancelled: **cancelled_at**
 - email associated with order: **email**
-- binary value for whether an order should be counted in paid orders and revenue: **is_completed**
+- column with binary value for whether the order should be included for completed orders and revenue: **is_completed**
 
 ---
 - [What is dbt](https://dbt.readme.io/docs/overview)?

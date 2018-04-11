@@ -26,7 +26,7 @@ fields as (
             when cancelled_at is not null
                 then true
             else false
-        end as cancelled
+        end as is_cancelled
 
     from orders
 ),
