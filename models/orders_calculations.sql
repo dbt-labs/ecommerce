@@ -16,12 +16,7 @@ fields as (
         split_part(split_part(created_at, '-' , 2),'-',1) as order_month,
         split_part(split_part(created_at, ' ' , 1),'-',3) as order_day_of_month,
 
-        case
-            when financial_status ilike 'paid' and
-                cancelled_at is null
-                then 1
-            else 0
-        end as completed_order,
+        {{completed_order(financial_status, ['paid', 'refunded'])}},
 
         case
             when {{ order_seq_number }} = 1
