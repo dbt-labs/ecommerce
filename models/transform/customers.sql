@@ -5,20 +5,7 @@ with customers as (
 
 orders as (
 
-<<<<<<< HEAD
     select * from {{ref('ORDERS_XF')}}
-
-),
-
-first_orders as (
-
-    select * from orders
-    where order_number = 1
-=======
-    select * from {{ref('orders_xf')}}
-    where order_seq_number = 1
->>>>>>> 15f626ef43c669129622769761629a70c4fc9d10
-
 ),
 
 joined as (
