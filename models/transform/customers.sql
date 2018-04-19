@@ -6,7 +6,7 @@ with customers as (
 
 orders as (
 
-    select * from {{ref('orders')}}
+    select * from {{ref('ORDERS_XF')}}
 
 ),
 
@@ -20,7 +20,7 @@ first_orders as (
 joined as (
 
     select
-    
+
         customers.*,
         first_orders.created_at as first_order_date
 

@@ -10,7 +10,7 @@
 
 select
 {{
-    dbt_utils.star(from=ref('orders_calculations'),
+    dbt_utils.star(from=ref('ORDERS_CALCULATIONS'),
     except=[
         "first_completed_order_date_calc",
         "previous_completed_order_date_calc",
@@ -20,4 +20,4 @@ select
     )
 }}
 
-from {{ref('orders_calculations')}}
+from {{ref('ORDERS_CALCULATIONS')}}
