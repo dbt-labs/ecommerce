@@ -5,7 +5,7 @@ with customers as (
 
 orders as (
 
-    select * from {{ref('ORDERS_XF')}}
+    select * from {{ref('orders_xf')}}
     where order_seq_number = 1
 
 ),
