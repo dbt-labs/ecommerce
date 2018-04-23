@@ -109,7 +109,7 @@ calculation_2 as (
         coalesce(first_completed_order_date_calc,
             max(first_completed_order_date_calc) over (
                 partition by email order by created_at
-                rows between unbounded preceding and unbounded following))
+                rows between unbounded preceding and unbounded following))::timestamp
         as first_completed_order_date,
 
         count(*) over (partition by email)
