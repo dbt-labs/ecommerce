@@ -78,6 +78,7 @@ calculation_1 as (
         case
             when is_completed = 1 then count(*) over (
                 partition by email, is_completed
+                order by created_at
                 rows between unbounded preceding and unbounded following)
                 else null
         end as lifetime_completed_orders_calc,
@@ -115,7 +116,8 @@ calculation_2 as (
             as first_completed_order_date,
 
         count(*) over (partition by email
-                    rows between unbounded preceding and unbounded following)
+                  order by created_at
+                  rows between unbounded preceding and unbounded following)
             as lifetime_placed_orders,
 
         coalesce(lifetime_completed_orders_calc,
