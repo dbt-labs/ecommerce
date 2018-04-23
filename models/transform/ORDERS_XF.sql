@@ -24,4 +24,4 @@ select
     )
 }}
 
-from {{ref('orders_calculations')}}
+from {{ref('ORDERS_CALCULATIONS')}}
