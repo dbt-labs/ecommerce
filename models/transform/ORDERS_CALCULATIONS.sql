@@ -77,7 +77,7 @@ calculation_1 as (
 
         case
             when is_completed = 1 then count(*) over (
-                partition by email, is_completed
+                partition by email, is_completed)
                 else null
         end as lifetime_completed_orders_calc,
 
