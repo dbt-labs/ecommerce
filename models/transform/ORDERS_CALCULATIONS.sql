@@ -113,9 +113,7 @@ calculation_2 as (
                 rows between unbounded preceding and unbounded following))::timestamp
             as first_completed_order_date,
 
-        count(*) over (partition by email
-                  rows between unbounded preceding and unbounded following)
-            as lifetime_placed_orders,
+        count(*) over (partition by email) as lifetime_placed_orders,
 
         coalesce(lifetime_completed_orders_calc,
             max(lifetime_completed_orders_calc) over (
