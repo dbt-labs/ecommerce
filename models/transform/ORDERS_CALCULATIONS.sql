@@ -78,7 +78,6 @@ calculation_1 as (
         case
             when is_completed = 1 then count(*) over (
                 partition by email, is_completed
-                rows between unbounded preceding and unbounded following)
                 else null
         end as lifetime_completed_orders_calc,
 
