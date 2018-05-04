@@ -1,18 +1,18 @@
-ADDRESSES:
+addresses:
     constraints:
         not_null:
             - address_id
         unique:
             - address_id
 
-CUSTOMERS:
+customers:
     constraints:
         not_null:
             - customer_id
         unique:
             - customer_id
 
-ORDER_ITEMS:
+order_items:
     constraints:
         not_null:
             - order_item_id
@@ -22,7 +22,7 @@ ORDER_ITEMS:
             - {from: order_id, to: ref('orders'), field: order_id}
             - {from: product_id, to: ref('products'), field: product_id}
 
-ORDERS_XF:
+orders_xf:
     constraints:
         not_null:
             - email
@@ -44,7 +44,7 @@ ORDERS_XF:
         relationships:
             - {from: customer_id, to: ref('customers'), field: customer_id}
 
-PRODUCTS:
+products:
     constraints:
         not_null:
             - product_id
