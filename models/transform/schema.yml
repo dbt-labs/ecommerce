@@ -9,9 +9,8 @@ CUSTOMERS:
     constraints:
         not_null:
             - customer_id
-            - email
         unique:
-            - email
+            - customer_id
 
 ORDER_ITEMS:
     constraints:
