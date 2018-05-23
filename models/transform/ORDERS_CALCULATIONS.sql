@@ -138,7 +138,8 @@ date_diffs as (
 
         case
             when created_at < first_completed_order_date then null
-            else {{dbt_utils.datediff(created_at, first_completed_order_date, month)}}
+            else {{dbt_utils.datediff(first_date=created_at, 
+                second_date=first_completed_order_date, datepart=month)}}
         end as months_from_first_completed_order,
 
         case
