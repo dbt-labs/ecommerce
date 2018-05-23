@@ -64,13 +64,13 @@ calculation_1 as (
             else null
         end as first_completed_order_date_calc,
 
-        dbt_utils.safe_cast(
+        {{ dbt_utils.safe_cast(
             (case
             when completed_order_number > 1 then lag(created_at, 1) over (
                 partition by email, is_completed order by created_at)
             when completed_order_number = 1 then null
             else null
-        end), timestamp) as previous_completed_order_date_calc,
+        end), timestamp)}} as previous_completed_order_date_calc,
 
         case
             when is_completed = 1 then count(*) over (
@@ -97,20 +97,20 @@ calculation_2 as (
             -- orders, regardless of whether order was completed or not.
         -- Other fields in this CTE are for completed orders only.
 
-        dbt_utils.safe_cast (
+        {{ dbt_utils.safe_cast (
             ( min(created_at) over
                 (partition by email
                 order by created_at
                 rows between unbounded preceding and unbounded following)),
-                timestamp)
+                timestamp) }}
             as first_order_date,
 
         coalesce(first_completed_order_date_calc,
-            dbt_utils.safe_cast (
+            {{ dbt_utils.safe_cast (
                 (max(first_completed_order_date_calc) over (
                 partition by email order by created_at
                 rows between unbounded preceding and unbounded following))
-                , timestamp))
+                , timestamp)) }}
             as first_completed_order_date,
 
         count(*) over (partition by email) as lifetime_placed_orders,
