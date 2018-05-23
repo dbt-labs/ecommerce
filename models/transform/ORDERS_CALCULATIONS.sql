@@ -144,22 +144,26 @@ date_diffs as (
 
         case
             when created_at < first_completed_order_date then null
-            else {{dbt_utils.datediff(created_at, first_completed_order_date, week)}}
+            else {{dbt_utils.datediff("created_at", 
+                "first_completed_order_date", 'week')}}
         end as weeks_from_first_completed_order,
 
         case
             when created_at < first_completed_order_date then null
-            else {{dbt_utils.datediff(created_at, first_completed_order_date, day)}}
+            else {{dbt_utils.datediff("created_at", 
+                "first_completed_order_date", 'day')}}
         end as days_from_first_completed_order,
 
         case
             when created_at <= first_completed_order_date then null
-            else {{dbt_utils.datediff(created_at, previous_completed_order_date, day)}}
+            else {{dbt_utils.datediff("created_at", 
+                "previous_completed_order_date", 'day')}}
         end as days_since_previous_completed_order,
 
         case
             when created_at < first_completed_order_date then null
-            else {{dbt_utils.datediff(current_date, first_completed_order_date, day)}}
+            else {{dbt_utils.datediff("current_date", 
+                "first_completed_order_date", 'day')}}
         end as customer_age_days
 
     from calculation_2
