@@ -121,9 +121,10 @@ calculation_2 as (
 
         case
             when created_at <= first_completed_order_date_calc then null
+            when is_completed = 0 then null
             else coalesce(previous_completed_order_date_calc,
-                lag(previous_completed_order_date_calc, 1 ignore nulls) over (
-                partition by email order by created_at desc))
+                lag(previous_completed_order_date_calc, 1) over (
+                partition by email, is_completed order by created_at desc))
         end as previous_completed_order_date
 
     from calculation_1
