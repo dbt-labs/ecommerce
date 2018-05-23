@@ -9,8 +9,9 @@ CUSTOMERS:
     constraints:
         not_null:
             - customer_id
+            - email
         unique:
-            - customer_id
+            - email
 
 ORDER_ITEMS:
     constraints:
@@ -28,9 +29,7 @@ ORDERS_XF:
             - email
             - order_id
             - created_at
-            - order_year
-            - order_month
-            - order_day_of_month
+            - created_date
             - is_completed
             - lifetime_placed_orders
             - lifetime_completed_orders
