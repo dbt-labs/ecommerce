@@ -70,7 +70,7 @@ calculation_1 as (
 
         dbt_utils.safe_cast(
             (case
-            when completed_order_number > 1 then lag(created_at, offset 1) over (
+            when completed_order_number > 1 then lag(created_at, 1) over (
                 partition by email, is_completed order by created_at)
             when completed_order_number = 1 then null
             else null
@@ -132,7 +132,7 @@ calculation_2 as (
         case
             when created_at <= first_completed_order_date_calc then null
             else coalesce(previous_completed_order_date_calc,
-                lag(previous_completed_order_date_calc, offset 1) ignore nulls over (
+                lag(previous_completed_order_date_calc, 1) ignore nulls over (
                 partition by email order by created_at desc))
         end as previous_completed_order_date
 
