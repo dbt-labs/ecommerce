@@ -122,7 +122,7 @@ calculation_2 as (
             as lifetime_revenue,
 
         case
-            when created_at <= first_completed_order_date_calc then null
+            when created_at <= first_completed_order_timestamp_calc then null
             when is_completed = 0 then null
             else coalesce(previous_completed_order_timestamp_calc,
                 lag(previous_completed_order_timestamp_calc, 1) over (
