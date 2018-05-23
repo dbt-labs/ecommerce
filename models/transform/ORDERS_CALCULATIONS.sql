@@ -153,32 +153,32 @@ date_diffs as (
 
         case
             when created_at < first_completed_order_timestamp then null
-            else {{dbt_utils.datediff("created_date", 
-                "first_completed_order_date", 'month')}}
+            else {{dbt_utils.datediff("first_completed_order_date", 
+                "created_date", 'month')}}
         end as months_from_first_completed_order,
 
         case
             when created_at < first_completed_order_timestamp then null
-            else {{dbt_utils.datediff("created_date", 
-                "first_completed_order_date", 'week')}}
+            else {{dbt_utils.datediff("first_completed_order_date", 
+                "created_date", 'week')}}
         end as weeks_from_first_completed_order,
 
         case
             when created_at < first_completed_order_timestamp then null
-            else {{dbt_utils.datediff("created_date", 
-                "first_completed_order_date", 'day')}}
+            else {{dbt_utils.datediff("first_completed_order_date",
+                    "created_date", 'day')}}
         end as days_from_first_completed_order,
 
         case
             when created_at <= first_completed_order_timestamp then null
-            else {{dbt_utils.datediff("created_date", 
-                "previous_completed_order_date", 'day')}}
+            else {{dbt_utils.datediff("previous_completed_order_date",
+                    "created_date", 'day')}}
         end as days_since_previous_completed_order,
 
         case
             when created_date < first_completed_order_date then null
-            else {{dbt_utils.datediff("current_date", 
-                "first_completed_order_date", 'day')}}
+            else {{dbt_utils.datediff("first_completed_order_date",
+                    "current_date", 'day')}}
         end as customer_age_days
 
     from date_calc
