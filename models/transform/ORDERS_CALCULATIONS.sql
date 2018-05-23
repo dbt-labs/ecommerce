@@ -22,7 +22,9 @@ fields as (
             when cancelled_at is not null
                 then true
             else false
-        end as is_cancelled
+        end as is_cancelled,
+        
+        cast(created_at as date) as created_date
 
     from orders
 ),
@@ -62,14 +64,14 @@ calculation_1 as (
                     partition by email, is_completed order by created_at
                     rows between unbounded preceding and unbounded following)
             else null
-        end as first_completed_order_date_calc,
+        end as first_completed_order_timestamp_calc,
 
         case
             when completed_order_number > 1 then lag(created_at, 1) over (
                 partition by email, is_completed order by created_at)
             when completed_order_number = 1 then null
             else null 
-        end as previous_completed_order_date_calc,
+        end as previous_completed_order_timestamp_calc,
 
         case
             when is_completed = 1 then count(*) over (
@@ -99,13 +101,13 @@ calculation_2 as (
         min(created_at) over
                 (partition by email order by created_at
                 rows between unbounded preceding and unbounded following)
-            as first_order_date,
+            as first_order_timestamp,
 
-        coalesce(first_completed_order_date_calc,
-                (max(first_completed_order_date_calc) over (
+        coalesce(first_completed_order_timestamp_calc,
+                (max(first_completed_order_timestamp_calc) over (
                 partition by email order by created_at
                 rows between unbounded preceding and unbounded following)))
-            as first_completed_order_date,
+            as first_completed_order_timestamp,
 
         count(*) over (partition by email) as lifetime_placed_orders,
 
@@ -122,13 +124,26 @@ calculation_2 as (
         case
             when created_at <= first_completed_order_date_calc then null
             when is_completed = 0 then null
-            else coalesce(previous_completed_order_date_calc,
-                lag(previous_completed_order_date_calc, 1) over (
+            else coalesce(previous_completed_order_timestamp_calc,
+                lag(previous_completed_order_timestamp_calc, 1) over (
                 partition by email, is_completed order by created_at desc))
-        end as previous_completed_order_date
+        end as previous_completed_order_timestamp
 
     from calculation_1
 ),
+
+date_calc as (
+    
+    select 
+    
+        *,
+        cast(first_order_timestamp as date) as first_order_date,
+        cast(first_completed_order_timestamp as date) as first_completed_order_date,
+        cast(previous_completed_order_timestamp as date) as previous_completed_order_date
+        
+    from calculation_2
+),
+
 
 date_diffs as (
 
@@ -137,26 +152,26 @@ date_diffs as (
         *,
 
         case
-            when created_at < first_completed_order_date then null
-            else {{dbt_utils.datediff("created_at", 
+            when created_at < first_completed_order_timestamp then null
+            else {{dbt_utils.datediff("created_date", 
                 "first_completed_order_date", 'month')}}
         end as months_from_first_completed_order,
 
         case
-            when created_at < first_completed_order_date then null
-            else {{dbt_utils.datediff("created_at", 
+            when created_at < first_completed_order_timestamp then null
+            else {{dbt_utils.datediff("created_date", 
                 "first_completed_order_date", 'week')}}
         end as weeks_from_first_completed_order,
 
         case
-            when created_at < first_completed_order_date then null
-            else {{dbt_utils.datediff("created_at", 
+            when created_at < first_completed_order_timestamp then null
+            else {{dbt_utils.datediff("created_date", 
                 "first_completed_order_date", 'day')}}
         end as days_from_first_completed_order,
 
         case
-            when created_at <= first_completed_order_date then null
-            else {{dbt_utils.datediff("created_at", 
+            when created_at <= first_completed_order_timestamp then null
+            else {{dbt_utils.datediff("created_date", 
                 "previous_completed_order_date", 'day')}}
         end as days_since_previous_completed_order,
 
@@ -166,7 +181,7 @@ date_diffs as (
                 "first_completed_order_date", 'day')}}
         end as customer_age_days
 
-    from calculation_2
+    from date_calc
 ),
 
 final_calculations as (
