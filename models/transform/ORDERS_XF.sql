@@ -1,6 +1,6 @@
 -- to exclude extraneous intermediary columns from orders_calculations
 
-{{config(materialized='table'}}
+{{config(materialized='table')}}
 
 select
 {{
