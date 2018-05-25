@@ -42,7 +42,7 @@ ORDERS_XF:
         unique:
             - order_id
         relationships:
-            - {from: customer_id, to: ref('customers'), field: customer_id}
+            - {from: email, to: ref('customers'), field: email}
 
 PRODUCTS:
     constraints:
