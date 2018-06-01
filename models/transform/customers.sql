@@ -1,9 +1,9 @@
-with customers as (
+with customers_cte as (
 
     select * from {{var('customers_table')}}
 ),
 
-orders as (
+orders_cte as (
 
     select * from {{ref('orders_xf')}}
     where order_seq_number = 1
@@ -13,7 +13,7 @@ joined as (
 
     select
 
-        customers.*,
+        customers_cte.*,
         orders.first_order_date,
         orders.first_completed_order_date,
         orders.lifetime_placed_orders,
@@ -29,7 +29,7 @@ joined as (
         orders.customer_first_90_day_revenue
 
     from customers
-    left join orders using (customer_id)
+    left join orders_cte as orders using (customer_id)
 )
 
 select * from joined
