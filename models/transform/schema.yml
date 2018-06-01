@@ -41,8 +41,6 @@ orders_xf:
             - customer_first_90_day_completed_orders
         unique:
             - order_id
-        relationships:
-            - {from: email, to: ref('customers'), field: email}
 
 products:
     constraints:
