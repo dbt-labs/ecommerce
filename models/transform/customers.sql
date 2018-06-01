@@ -28,7 +28,7 @@ joined as (
         orders.customer_first_90_day_completed_orders,
         orders.customer_first_90_day_revenue
 
-    from customers
+    from customers_cte
     left join orders_cte as orders using (customer_id)
 )
 
