@@ -1,7 +1,7 @@
 
 {% set order_seq_number = "row_number() over (partition by email order by created_at)" %}
 
-with orders as (
+with all_orders as (
 
     select * from {{var('orders_table')}}
 ),
@@ -28,7 +28,7 @@ fields as (
             else false
         end as is_cancelled
 
-    from orders
+    from all_orders
 ),
 
 order_numbers as (
