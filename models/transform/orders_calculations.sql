@@ -1,9 +1,13 @@
 
 {% set order_seq_number = "row_number() over (partition by email order by created_at)" %}
 
+{% set frame_clause = "over(partition by email order by created_at
+rows between unbounded preceding and unbounded following)" %}
+
 with orders as (
 
     select * from {{var('orders_table')}}
+    
 ),
 
 fields as (
@@ -29,6 +33,7 @@ fields as (
         end as is_cancelled
 
     from orders
+    
 ),
 
 order_numbers as (
@@ -50,42 +55,38 @@ order_numbers as (
     from fields
 ),
 
---the general idea for the next 2 CTEs is:
---calculation_1 calculates fields using case when, null if order_completed = 0,
---calculation_2 calculates values where is_completed = 0 using coalesce
-
 calculation_1 as (
+
+--this CTE calculates values for a given user either for total values or
+--for completed values only
 
     select
 
         *,
+        
+        --total values
+        
+        min(created_at) {{frame_clause}}::timestamp as first_order_date,
+        
+        count(*) over (partition by email) as lifetime_placed_orders,
+        
+        sum(total_price) {{frame_clause}} as lifetime_revenue,
+        
+        --completed order values
 
-        case
-            when is_completed = 1
-                then min(created_at) over (
-                    partition by email, is_completed order by created_at
-                    rows between unbounded preceding and unbounded following)
-            else null
-        end as first_completed_order_date_calc,
+        min(case when is_completed = 1 then created_at else null end) 
+            {{frame_clause}} as first_completed_order_date,
 
-        (case
-            when completed_order_number > 1 then lag(created_at, 1) over (
-                partition by email, is_completed order by created_at)
-            when completed_order_number = 1 then null
-            else null
-        end)::timestamp as previous_completed_order_date_calc,
+        sum(case when is_completed = 1 then 1 else 0 end) 
+            {{frame_clause}} as lifetime_completed_orders,
 
-        case
-            when is_completed = 1 then count(*) over (
-                partition by email, is_completed)
-                else null
-        end as lifetime_completed_orders_calc,
-
-        case
-            when is_completed = 1 then sum(total_price) over (
-                partition by email, is_completed)
-                else null
-        end as lifetime_revenue_calc
+        sum(case when is_completed = 1 then total_price else 0 end) 
+            {{frame_clause}} as lifetime_completed_revenue,
+        
+        --this creates a field needed to achieve the final value in the next CTE
+        
+        lag(created_at) over (partition by email, is_completed order by 
+            created_at) as previous_completed_order_calc
 
     from order_numbers
 
@@ -93,46 +94,21 @@ calculation_1 as (
 
 calculation_2 as (
 
+--filling in lagged rows for previous completed order date for non complete orders
+
     select
 
         *,
-        -- first_order_date and lifetime_placed_orders calculated using all
-            -- orders, regardless of whether order was completed or not.
-        -- Other fields in this CTE are for completed orders only.
-
-        min(created_at) over
-            (partition by email
-                order by created_at
-                rows between unbounded preceding and unbounded following)
-                ::timestamp
-            as first_order_date,
-
-        coalesce(first_completed_order_date_calc,
-            max(first_completed_order_date_calc) over (
-                partition by email order by created_at
-                rows between unbounded preceding and unbounded following))::timestamp
-            as first_completed_order_date,
-
-        count(*) over (partition by email) as lifetime_placed_orders,
-
-        coalesce(lifetime_completed_orders_calc,
-            max(lifetime_completed_orders_calc) over (
-                partition by email), 0)
-            as lifetime_completed_orders,
-
-        coalesce(lifetime_revenue_calc,
-            max(lifetime_revenue_calc) over (
-                partition by email), 0)
-            as lifetime_revenue,
 
         case
-            when created_at <= first_completed_order_date_calc then null
-            else coalesce(previous_completed_order_date_calc,
-                lag(previous_completed_order_date_calc, 1) ignore nulls over (
-                partition by email order by created_at desc))
+            when created_at <= first_completed_order_date then null
+            else coalesce(previous_completed_order_calc,
+            lead(previous_completed_order_calc, 1) ignore nulls over (
+                partition by email order by created_at))
         end as previous_completed_order_date
 
     from calculation_1
+
 ),
 
 date_diffs as (
@@ -167,6 +143,7 @@ date_diffs as (
         end as customer_age_days
 
     from calculation_2
+    
 ),
 
 final_calculations as (
@@ -180,60 +157,38 @@ final_calculations as (
             else 'non_purchaser'
         end as customer_type,
 
-        sum(case
-                when days_from_first_completed_order <= 30
-                    and is_completed = 1 then 1
-                else 0
-            end) over(
-                    partition by email order by created_at
-                    rows between unbounded preceding and unbounded following)
-        as customer_first_30_day_completed_orders,
+        sum(case when days_from_first_completed_order <= 30 and is_completed = 1 
+            then 1 else 0 end) 
+            {{ frame_clause }}
+            as customer_first_30_day_completed_orders,
 
-        sum(case
-                when days_from_first_completed_order <= 30 and is_completed = 1
-                    then total_price
-                else 0
-            end) over(
-                    partition by email order by created_at
-                    rows between unbounded preceding and unbounded following)
+        sum(case when days_from_first_completed_order <= 30 and is_completed = 1
+            then total_price else 0 end) 
+            {{ frame_clause }}
         as customer_first_30_day_revenue,
 
-        sum(case
-                when days_from_first_completed_order <= 60 and is_completed = 1
-                    then 1
-                else 0
-            end) over (
-                    partition by email order by created_at
-                    rows between unbounded preceding and unbounded following)
-        as customer_first_60_day_completed_orders,
+        sum(case when days_from_first_completed_order <= 60 and is_completed = 1
+            then 1 else 0 end) 
+            {{ frame_clause }}
+            as customer_first_60_day_completed_orders,
 
-        sum(case
-                when days_from_first_completed_order <= 60 and is_completed = 1
-                    then total_price
-                 else 0 end) over(
-                     partition by email order by created_at
-                     rows between unbounded preceding and unbounded following)
-        as customer_first_60_day_revenue,
+        sum(case when days_from_first_completed_order <= 60 and is_completed = 1
+            then total_price else 0 end) 
+            {{ frame_clause }}
+            as customer_first_60_day_revenue,
 
-        sum(case
-                when days_from_first_completed_order <= 90 and is_completed = 1
-                    then 1
-                else 0
-            end) over
-                    (partition by email order by created_at
-                    rows between unbounded preceding and unbounded following)
-        as customer_first_90_day_completed_orders,
+        sum(case when days_from_first_completed_order <= 90 and is_completed = 1
+            then 1 else 0 end) 
+            {{ frame_clause }}
+            as customer_first_90_day_completed_orders,
 
-        sum(case
-                when days_from_first_completed_order <= 90 and is_completed = 1
-                    then total_price
-                else 0
-            end) over (
-                    partition by email order by created_at
-                    rows between unbounded preceding and unbounded following)
-        as customer_first_90_day_revenue
+        sum(case when days_from_first_completed_order <= 90 and is_completed = 1
+            then total_price else 0 end) 
+            {{ frame_clause }}
+            as customer_first_90_day_revenue
 
     from date_diffs
+    
 )
 
 select * from final_calculations
