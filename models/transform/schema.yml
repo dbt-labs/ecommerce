@@ -1,52 +1,54 @@
-addresses:
-    constraints:
-        not_null:
-            - address_id
-        unique:
-            - address_id
+version: 2
 
-customers:
-    constraints:
-        not_null:
-            - customer_id
-        unique:
-            - customer_id
-
-order_items:
-    constraints:
-        not_null:
-            - order_item_id
-        unique:
-            - order_item_id
-        relationships:
-            - {from: order_id, to: ref('orders'), field: order_id}
-            - {from: product_id, to: ref('products'), field: product_id}
-
-orders_xf:
-    constraints:
-        not_null:
-            - email
-            - order_id
-            - created_at
-            - order_year
-            - order_month
-            - order_day_of_month
-            - is_completed
-            - lifetime_placed_orders
-            - lifetime_completed_orders
-            - lifetime_revenue
-            - customer_type
-            - customer_first_30_day_completed_orders
-            - customer_first_60_day_completed_orders
-            - customer_first_90_day_completed_orders
-        unique:
-            - order_id
-        relationships:
-            - {from: customer_id, to: ref('customers'), field: customer_id}
-
-products:
-    constraints:
-        not_null:
-            - product_id
-        unique:
-            - product_id
+models:
+    
+- name: addresses
+  columns:
+  - name: address_id
+    tests:
+    - not_null
+    - unique
+    
+- name: customers
+  columns:
+  - name: customer_id
+    tests:
+    - not_null
+    - unique
+    
+- name: order_items
+  columns:
+  - name: order_id
+    tests:
+    - relationships:
+        field: order_id
+        to: ref('orders')
+  - name: order_item_id
+    tests:
+    - not_null
+    - unique
+    
+- name: orders_xf
+  columns:
+  - name: created_at
+    tests:
+    - not_null
+  - name: customer_id
+    tests:
+    - relationships:
+        field: customer_id
+        to: ref('customers')
+  - name: email
+    tests:
+    - not_null
+  - name: order_id
+    tests:
+    - not_null
+    - unique
+    
+- name: products
+  columns:
+  - name: product_id
+    tests:
+    - not_null
+    - unique
