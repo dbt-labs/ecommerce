@@ -1,8 +1,10 @@
 
 {% set order_seq_number = "row_number() over (partition by email order by created_at)" %}
 
-{% set frame_clause = "over(partition by email order by created_at
+{% set frame_clause = "over (partition by email order by created_at
 rows between unbounded preceding and unbounded following)" %}
+
+{% set window = "over (partition by email)" %}
 
 with orders as (
 
@@ -20,11 +22,7 @@ fields as (
         split_part(split_part(created_at, '-' , 2),'-',1) as order_month,
         split_part(split_part(created_at, ' ' , 1),'-',3) as order_day_of_month,
 
-        case
-            when {{ order_seq_number }} = 1
-                then 'new'
-            else 'repeat'
-        end as new_vs_repeat,
+        {{ order_seq_number }} as order_seq_number,
 
         case
             when cancelled_at is not null
@@ -41,8 +39,12 @@ order_numbers as (
     select
 
         *,
-
-        {{ order_seq_number }} as order_seq_number,
+        
+        case
+            when order_seq_number = 1
+                then 'new'
+            else 'repeat'
+        end as new_vs_repeat,
 
         case
             when is_completed = 1
@@ -66,7 +68,7 @@ calculation_1 as (
         
         --total values
         
-        min(created_at) {{frame_clause}}::timestamp as first_order_date,
+        min(created_at) {{window}}::timestamp as first_order_date,
         
         count(*) over (partition by email) as lifetime_placed_orders,
         
@@ -75,7 +77,7 @@ calculation_1 as (
         --completed order values
 
         min(case when is_completed = 1 then created_at else null end) 
-            {{frame_clause}} as first_completed_order_date,
+            {{window}} as first_completed_order_date,
 
         sum(case when is_completed = 1 then 1 else 0 end) 
             {{frame_clause}} as lifetime_completed_orders,
