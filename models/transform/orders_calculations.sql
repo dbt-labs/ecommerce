@@ -21,14 +21,24 @@ fields as (
         split_part(created_at, '-' , 1) as order_year,
         split_part(split_part(created_at, '-' , 2),'-',1) as order_month,
         split_part(split_part(created_at, ' ' , 1),'-',3) as order_day_of_month,
-
-        {{ order_seq_number }} as order_seq_number,
-
+        
         case
             when cancelled_at is not null
                 then true
             else false
-        end as is_cancelled
+        end as is_cancelled,
+
+        --order numbers
+
+        {{ order_seq_number }} as order_seq_number,
+        
+        case
+            when is_completed = 1
+                then row_number() over (
+                    partition by email, is_completed
+                    order by created_at)
+            else null
+        end as completed_order_number
 
     from orders
     
@@ -41,18 +51,10 @@ order_numbers as (
         *,
         
         case
-            when order_seq_number = 1
+            when completed_order_number = 1
                 then 'new'
             else 'repeat'
-        end as new_vs_repeat,
-
-        case
-            when is_completed = 1
-                then row_number() over (
-                    partition by email, is_completed
-                    order by created_at)
-            else null
-        end as completed_order_number
+        end as new_vs_repeat
 
     from fields
 ),

@@ -10,6 +10,7 @@ models:
     - unique
     
 - name: customers
+  description: {{doc('ecommerce_customers')}}
   columns:
   - name: customer_id
     tests:
@@ -28,7 +29,16 @@ models:
     - not_null
     - unique
     
+- name: orders_calculations
+  description: {{doc('order_calculations')}}
+  columns:
+  - name: order_id
+    tests:
+    - not_null
+    - unique
+
 - name: orders_xf
+  description: {{doc('order_final')}}
   columns:
   - name: created_at
     tests:
