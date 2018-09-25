@@ -5,7 +5,7 @@ with customers as (
 
 orders as (
 
-    select * from {{ref('ORDERS_XF')}}
+    select * from {{ref('orders_xf')}}
     where order_seq_number = 1
 ),
 
@@ -29,7 +29,7 @@ joined as (
         orders.customer_first_90_day_revenue
 
     from customers
-    left join orders using (customer_id)
+    left join orders using ({{var('customer_join_on')}})
 )
 
 select * from joined
