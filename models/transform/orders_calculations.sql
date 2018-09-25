@@ -1,10 +1,11 @@
 
-{% set order_seq_number = "row_number() over (partition by email order by created_at)" %}
+{% set order_seq_number = "row_number() over (partition by 
+    {{var('customer_aggregate_on')}} order by created_at)" %}
 
-{% set frame_clause = "over (partition by email order by created_at
-rows between unbounded preceding and unbounded following)" %}
+{% set frame_clause = "over (partition by {{var('customer_aggregate_on')}} order 
+by created_at rows between unbounded preceding and unbounded following)" %}
 
-{% set window = "over (partition by email)" %}
+{% set window = "over (partition by {{var('customer_aggregate_on')}})" %}
 
 with orders as (
 
@@ -35,7 +36,7 @@ fields as (
         case
             when is_completed = 1
                 then row_number() over (
-                    partition by email, is_completed
+                    partition by {{var('customer_aggregate_on')}}, is_completed
                     order by created_at)
             else null
         end as completed_order_number
@@ -72,7 +73,8 @@ calculation_1 as (
         
         min(created_at) {{window}}::timestamp as first_order_date,
         
-        count(*) over (partition by email) as lifetime_placed_orders,
+        count(*) over (partition by {{var('customer_aggregate_on')}}) 
+            as lifetime_placed_orders,
         
         sum(total_price) {{frame_clause}} as lifetime_revenue,
         
@@ -89,8 +91,8 @@ calculation_1 as (
         
         --this creates a field needed to achieve the final value in the next CTE
         
-        lag(created_at) over (partition by email, is_completed order by 
-            created_at) as previous_completed_order_calc
+        lag(created_at) over (partition by {{var('customer_aggregate_on')}}, 
+            is_completed order by created_at) as previous_completed_order_calc
 
     from order_numbers
 
@@ -108,7 +110,7 @@ calculation_2 as (
             when created_at <= first_completed_order_date then null
             else coalesce(previous_completed_order_calc,
             lead(previous_completed_order_calc, 1) ignore nulls over (
-                partition by email order by created_at))
+                partition by {{var('customer_aggregate_on')}} order by created_at))
         end as previous_completed_order_date
 
     from calculation_1
