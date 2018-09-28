@@ -20,7 +20,7 @@ joined as (
         orders.lifetime_completed_orders,
         orders.lifetime_revenue,
         orders.customer_age_days,
-        orders.customer_type,
+        coalesce(orders.customer_type, 'non_purchaser') as customer_type,
         orders.customer_first_30_day_completed_orders,
         orders.customer_first_30_day_revenue,
         orders.customer_first_60_day_completed_orders,
