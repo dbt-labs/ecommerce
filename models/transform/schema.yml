@@ -45,9 +45,7 @@ models:
     - not_null
   - name: customer_id
     tests:
-    - relationships:
-        field: customer_id
-        to: ref('customers')
+    - not_null
   - name: email
     tests:
     - not_null
