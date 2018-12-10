@@ -23,7 +23,7 @@ models:
     tests:
     - relationships:
         field: order_id
-        to: ref('orders')
+        to: ref('orders_xf')
   - name: order_item_id
     tests:
     - not_null
