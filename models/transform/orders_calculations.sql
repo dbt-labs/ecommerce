@@ -19,9 +19,9 @@ fields as (
 
         *,
 
-        split_part(created_at, '-' , 1) as order_year,
-        split_part(split_part(created_at, '-' , 2),'-',1) as order_month,
-        split_part(split_part(created_at, ' ' , 1),'-',3) as order_day_of_month,
+        {{ dbt_utils.split_part('created_at', "'-'" , 1) }} as order_year,
+        {{ dbt_utils.split_part(dbt_utils.split_part('created_at', "'-'" , 2),"'-'",1) }} as order_month,
+        {{ dbt_utils.split_part(dbt_utils.split_part('created_at', "' '" , 1),"'-'",3) }} as order_day_of_month,
         
         case
             when cancelled_at is not null
