@@ -1,8 +1,6 @@
 # Fishtown Analytics Ecommerce Package
 
-## Dependencies
-
-This package requires that you have [dbt-utils](https://github.com/fishtown-analytics/dbt-utils) listed in your project's packages.yml file
+Requires dbt >= 0.12.2
 
 ## Required Columns
 
