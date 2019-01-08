@@ -2,9 +2,7 @@
 
 {{
     config(
-        materialized='table',
-        sort='created_at',
-        dist='order_id'
+        materialized='table'
     )
 }}
 

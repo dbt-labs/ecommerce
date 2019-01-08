@@ -7,6 +7,7 @@ by created_at rows between unbounded preceding and unbounded following)" %}
 
 {% set window = "over (partition by {{var('customer_aggregate_on')}})" %}
 
+
 with orders as (
 
     select * from {{var('orders_table')}}
@@ -19,9 +20,9 @@ fields as (
 
         *,
 
-        {{ dbt_utils.split_part('created_at', "'-'" , 1) }} as order_year,
-        {{ dbt_utils.split_part(dbt_utils.split_part('created_at', "'-'" , 2),"'-'",1) }} as order_month,
-        {{ dbt_utils.split_part(dbt_utils.split_part('created_at', "' '" , 1),"'-'",3) }} as order_day_of_month,
+        split_part(created_at, '-' , 1) as order_year,
+        split_part(split_part(created_at, '-' , 2),'-',1) as order_month,
+        split_part(split_part(created_at, ' ' , 1),'-',3) as order_day_of_month,
         
         case
             when cancelled_at is not null
@@ -52,8 +53,8 @@ order_numbers as (
         *,
         
         case
-            when completed_order_number = 1
-                then 'new'
+            when completed_order_number is null then null
+            when completed_order_number = 1 then 'new'
             else 'repeat'
         end as new_vs_repeat
 
@@ -125,27 +126,27 @@ date_diffs as (
 
         case
             when created_at < first_completed_order_date then null
-            else datediff(month, first_completed_order_date, created_at)
+            else datediff('month', first_completed_order_date, created_at)
         end as months_from_first_completed_order,
 
         case
             when created_at < first_completed_order_date then null
-            else datediff(week, first_completed_order_date, created_at)
+            else datediff('week', first_completed_order_date, created_at)
         end as weeks_from_first_completed_order,
 
         case
             when created_at < first_completed_order_date then null
-            else datediff(day, first_completed_order_date, created_at)
+            else datediff('day', first_completed_order_date, created_at)
         end as days_from_first_completed_order,
 
         case
             when created_at <= first_completed_order_date then null
-            else datediff(day, previous_completed_order_date, created_at)
+            else datediff('day', previous_completed_order_date, created_at)
         end as days_since_previous_completed_order,
 
         case
             when created_at < first_completed_order_date then null
-            else datediff(day, first_completed_order_date, current_date)
+            else datediff('day', first_completed_order_date, current_date)
         end as customer_age_days
 
     from calculation_2
