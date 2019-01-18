@@ -43,12 +43,6 @@ models:
   - name: created_at
     tests:
     - not_null
-  - name: customer_id
-    tests:
-    - not_null
-  - name: email
-    tests:
-    - not_null
   - name: order_id
     tests:
     - not_null
