@@ -1,7 +1,7 @@
 view: products {
   sql_table_name: analytics.products ;;
   
-  # ------------------------------------------------ PRIMARY KEY
+# ------------------------------------------------ PRIMARY KEY
 
   dimension: product_id {
     type: number
@@ -10,13 +10,23 @@ view: products {
     hidden: yes
   }
   
- # ------------------------------------------------ DATES
-    dimension: created_at {
-      type: date
-      sql: ${TABLE}.created_at ;;
-    }
+# ------------------------------------------------ DATES
+
+  dimension_group: created {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}."CREATED_AT" ;;
+  }
     
-    dimension_group: published {
+  dimension_group: published {
     type: time
     timeframes: [
       raw,
@@ -44,10 +54,10 @@ view: products {
     sql: ${TABLE}.updated_at ;;
   }
 
-    dimension: deleted_at {
-      type: date
-      sql: ${TABLE}.deleted_at ;;
-    }
+  dimension: deleted_at {
+    type: date
+    sql: ${TABLE}.deleted_at ;;
+  }
 
 # ------------------------------------------------ PRODUCT ATTRIBUTES
 

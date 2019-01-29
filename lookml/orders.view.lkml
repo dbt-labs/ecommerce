@@ -688,31 +688,6 @@ view: orders {
     drill_fields: [orders_drill_fields*, total_gross_revenue]
   }
 
-  measure:total_shipping_costs {
-    type: sum
-    value_format_name: usd_0
-    sql: ${total_shipping_cost} ;;
-    group_label: "Totals"
-    drill_fields: [orders_drill_fields*, total_shipping_costs]
-  }
-
-  measure: total_tax_costs {
-    type: sum
-    value_format_name: usd_0
-    sql: ${total_tax} ;;
-    group_label: "Totals"
-    drill_fields: [orders_drill_fields*, total_tax_costs]
-  }
-
-  measure: total_sales{
-    description: "This sums subtotal price, total shipping costs, and total tax to get total sales revenue"
-    type: sum
-    value_format_name: usd_0
-    sql: ${subtotal_price} + ${total_shipping_cost} + ${total_tax} ;;
-    group_label: "Totals"
-    drill_fields: [orders_drill_fields*, total_sales]
-  }
-
   measure: average_order_value {
     description: "This sums net revenue and divides by the number of orders to get the average order value"
     type: average
