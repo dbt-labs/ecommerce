@@ -3,25 +3,24 @@ connection: " "
 include: "*.view.lkml"         # include all views in this project
 include: "*.dashboard.lookml"  # include all dashboards in this project
 
+#------------------------------------------ ECOMMERCE
+
+explore: customers{
+  label: "Shopify Customers"
+}
+
 explore: orders {
+  label: "Shopify Orders"
+
   join: order_items {
     sql_on: ${order_items.order_id} = ${orders.order_id} ;;
     type: left_outer
     relationship: one_to_many
   }
+
   join: customers {
-    type: left_outer
     relationship: many_to_one
+    type: left_outer
     sql_on: ${orders.customer_id} = ${customers.customer_id} ;;
   }
 }
-
-explore: order_items {
-  join: products {
-    type: left_outer
-    relationship: many_to_one
-    sql_on: ${order_items.product_id} = ${products.product_id} ;;
-  }
-}
-
-explore: customers {}
