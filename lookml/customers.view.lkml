@@ -11,16 +11,6 @@ view: customers {
 
 #------------------------------------------ IDS
 
-  dimension: last_order_id {
-    type: string
-    sql: ${TABLE}.last_order_id ;;
-  }
-
-  dimension: last_order_name_id {
-    type: string
-    sql: ${TABLE}.last_order_name_id ;;
-  }
-
   dimension: email {
     type: string
     sql: ${TABLE}.email ;;
@@ -100,20 +90,10 @@ view: customers {
     sql: ${TABLE}.last_name ;;
   }
 
-  dimension: orders_count {
-    type: string
-    sql: ${TABLE}.orders_count ;;
-  }
-
-  dimension: phone_number {
+  dimension: phone {
     hidden: yes
     type: string
-    sql: ${TABLE}.phone_number ;;
-  }
-
-  dimension: total_spent {
-    type: string
-    sql: ${TABLE}.total_spent ;;
+    sql: ${TABLE}.phone ;;
   }
 
   dimension: customer_age_days {
@@ -172,12 +152,6 @@ view: customers {
     group_label: "Customer Attributes"
   }
 
-  dimension: name {
-    type: string
-    hidden: yes
-    sql: ${TABLE}.name ;;
-  }
-
   dimension: lifetime_completed_orders {
     description: "This is a user's count of completed orders over all time"
     type: number
@@ -198,62 +172,7 @@ view: customers {
     sql: ${TABLE}.lifetime_revenue ;;
     group_label: "Customer Attributes"
   }
-
-#------------------------------------------ DIMENSIONS
-
-  dimension: accepts_marketing {
-    hidden: yes
-    type: yesno
-    sql: ${TABLE}.accepts_marketing ;;
-  }
-
-  dimension: addresses {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.addresses ;;
-  }
-
-  dimension: currency {
-    type: string
-    sql: ${TABLE}.currency ;;
-  }
-
-  dimension: default_address {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.default_address ;;
-  }
-
-  dimension: note {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.note ;;
-  }
-
-  dimension: state {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.state ;;
-  }
-
-  dimension: tags {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.tags ;;
-  }
-
-  dimension: tax_exempt {
-    hidden: yes
-    type: yesno
-    sql: ${TABLE}.tax_exempt ;;
-  }
-
-  dimension: verified_email {
-    hidden: yes
-    type: yesno
-    sql: ${TABLE}.verified_email ;;
-  }
-
+  
 #------------------------------------------ MEASURES
 
   measure: customers_count {
