@@ -23,8 +23,7 @@ view: products {
       quarter,
       year
     ]
-    sql: ${TABLE}."CREATED_AT" ;;
-  }
+    sql: ${TABLE}.created_at ;; }
     
   dimension_group: published {
     type: time
@@ -69,17 +68,5 @@ view: products {
   dimension: product_type {
     type: string
     sql: ${TABLE}.product_type ;;
-  }
-  
-  dimension: vendor {
-    type: string
-    sql: ${TABLE}.vendor ;;
-  }
-
-# ------------------------------------------------ MEASURES
-
-  measure: count {
-    type: count
-    drill_fields: [product_id]
   }
 }

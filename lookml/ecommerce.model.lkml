@@ -5,12 +5,9 @@ include: "*.dashboard.lookml"  # include all dashboards in this project
 
 #------------------------------------------ ECOMMERCE
 
-explore: customers{
-  label: "Shopify Customers"
-}
+explore: customers{}
 
 explore: orders {
-  label: "Shopify Orders"
 
   join: order_items {
     sql_on: ${order_items.order_id} = ${orders.order_id} ;;

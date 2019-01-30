@@ -5,7 +5,7 @@ view: customers {
 
   dimension: customer_id {
     primary_key: yes
-    type: string
+    type: number
     sql: ${TABLE}.customer_id ;;
   }
 
@@ -18,7 +18,7 @@ view: customers {
 
 #------------------------------------------ DATES
 
-  dimension_group: created_date {
+  dimension_group: created {
     type: time
     timeframes: [
       raw,
@@ -78,24 +78,6 @@ view: customers {
 
 #------------------------------------------ CUSTOMER ATTRIBUTES
 
-  dimension: first_name {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.first_name ;;
-  }
-
-  dimension: last_name {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.last_name ;;
-  }
-
-  dimension: phone {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.phone ;;
-  }
-
   dimension: customer_age_days {
     description: "This displays the number of days since a user's first completed order"
     type: number
@@ -146,7 +128,7 @@ view: customers {
   }
 
   dimension: customer_type {
-    description: "This classifies a customer based on their purchase history ('single_purchaser', 'repeat_purchaser', 'non_purchaser'"
+    description: "This classifies a customer based on their purchase history ('single_purchaser', 'repeat_purchaser', 'non_purchaser')"
     type: string
     sql: ${TABLE}.customer_type ;;
     group_label: "Customer Attributes"

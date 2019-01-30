@@ -5,7 +5,7 @@ view: orders {
 
   dimension: order_id {
     primary_key: yes
-    type: string
+    type: number
     sql: ${TABLE}.order_id ;;
   }
 
@@ -13,13 +13,13 @@ view: orders {
 
   dimension: customer_id {
     description: "This is the user's customer ID"
-    type: string
+    type: number
     sql: ${TABLE}.customer_id ;;
   }
   
 #------------------------------------------ DATES
 
-  dimension_group: created_at {
+  dimension_group: created {
     description: "This is the timestamp that the order was created"
     type: time
     timeframes: [
@@ -150,15 +150,9 @@ view: orders {
   }
 
   dimension: is_completed {
-    description: "This returns '1' if order is completed (financial_status in ('paid', 'partially_paid', 'partially_refunded')), '0' if no"
+    description: "This returns '1' if the parameters for a completed order have been fulfilled, '0' if no"
     type: number
     sql: ${TABLE}.is_completed ;;
-    group_label: "Order Attributes"
-  }
-
-  dimension: order_number {
-    type: string
-    sql: ${TABLE}.order_number ;;
     group_label: "Order Attributes"
   }
 
@@ -283,24 +277,6 @@ view: orders {
   }
 
 #------------------------------------------ DIMENSIONS
-
-  dimension: billing_address_id {
-    type: number
-    hidden: yes
-    sql: ${TABLE}.billing_address_id ;;
-  }
-
-  dimension: shipping_address_id {
-    type: number
-    hidden: yes
-    sql: ${TABLE}.shipping_address_id ;;
-  }
-
-  dimension: location_id {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.location_id ;;
-  }
 
   dimension: total {
     description: "This is the total price of the order"

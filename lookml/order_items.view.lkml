@@ -15,22 +15,22 @@ view: order_items {
 
   dimension: order_id {
     description: "This is the order ID"
-    type: string
+    type: number
     sql: ${TABLE}.order_id ;;
   }
   
   dimension: product_id {
     hidden: yes
-    type: string
+    type: number
     sql: ${TABLE}.product_id ;;
   }
 
 #------------------------------------------ ORDER ATTRIBUTES
 
-  dimension: product_sku {
+  dimension: sku {
     description: "This is the unique identifier for every product"
     type: string
-    sql: ${TABLE}.product_sku ;;
+    sql: ${TABLE}.sku ;;
   }
 
   dimension: price {
