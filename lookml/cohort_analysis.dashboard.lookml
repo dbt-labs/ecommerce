@@ -1,5 +1,5 @@
 - dashboard: cohort_analysis
-  title: Customer Cohort Analysis
+  title: Cohort Analysis
   layout: newspaper
 
   elements:
