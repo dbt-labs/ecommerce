@@ -531,8 +531,8 @@
     width: 12
     height: 6
     
-  - title: New vs Repeat Customers by Order Month
-    name: New vs Repeat Customers by Order Month
+  - title: New vs Repeat Customers by Order Date
+    name: New vs Repeat Customers by Order Date
     model: analytics
     explore: orders
     type: looker_column
