@@ -1,50 +1,89 @@
-ADDRESSES:
-    constraints:
-        not_null:
-            - address_id
-        unique:
-            - address_id
+version: 2
+- name: ADDRESSES
+  columns:
+  - name: address_id
+    tests:
+    - not_null
+    - unique
 
-CUSTOMERS:
-    constraints:
-        not_null:
-            - customer_id
-        unique:
-            - customer_id
+- name: CUSTOMERS
+  columns:
+  - name: customer_id
+    tests:
+    - not_null
+    - unique
 
-ORDER_ITEMS:
-    constraints:
-        not_null:
-            - order_item_id
-        unique:
-            - order_item_id
-        relationships:
-            - {from: order_id, to: ref('orders'), field: order_id}
-            - {from: product_id, to: ref('products'), field: product_id}
+- name: ORDERS_CALCULATIONS
+  columns:
+  - name: order_id
+    tests:
+    - not_null
+    - unique
 
-ORDERS_XF:
-    constraints:
-        not_null:
-            - email
-            - order_id
-            - created_at
-            - created_date
-            - is_completed
-            - lifetime_placed_orders
-            - lifetime_completed_orders
-            - lifetime_revenue
-            - customer_type
-            - customer_first_30_day_completed_orders
-            - customer_first_60_day_completed_orders
-            - customer_first_90_day_completed_orders
-        unique:
-            - order_id
-        relationships:
-            - {from: customer_id, to: ref('customers'), field: customer_id}
+- name: PRODUCTS
+  columns:
+  - name: product_id
+    tests:
+    - not_null
+    - unique
 
-PRODUCTS:
-    constraints:
-        not_null:
-            - product_id
-        unique:
-            - product_id
+- name: ORDERS_XF
+  columns:
+  - name: order_id
+    tests:
+    - not_null
+    - unique
+
+- name: ORDER_ITEMS
+  columns:
+  - name: order_item_id
+    tests:
+    - not_null
+    - unique
+    name: email
+    tests:
+    - not_null
+    
+    name: order_id
+    tests:
+    - not_null
+    
+    name: created_at
+    tests:
+    - not_null
+    
+    name: created_date
+    tests:
+    - not_null
+    
+    name: is_completed
+    tests:
+    - not_null
+    
+    name: lifetime_placed_orders
+    tests:
+    - not_null
+    
+    name: lifetime_completed_orders
+    tests:
+    - not_null
+    
+    name: lifetime_revenue
+    tests:
+    - not_null
+    
+    name: customer_type
+    tests:
+    - not_null
+    
+    name: customer_first_30_day_completed_orders
+    tests:
+    - not_null
+    
+    name: customer_first_60_day_completed_orders
+    tests:
+    - not_null
+    
+    name: customer_first_90_day_completed_orders
+    tests:
+    - not_null
