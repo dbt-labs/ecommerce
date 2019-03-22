@@ -1,4 +1,5 @@
 version: 2
+models:
 - name: ADDRESSES
   columns:
   - name: address_id
