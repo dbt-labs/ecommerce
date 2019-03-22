@@ -8,10 +8,5 @@
     )
 }}
 
-select
-{{
-    dbt_utils.star(from=ref('orders_calculations'),
-    except=["previous_completed_order_calc"])
-}}
 
-from {{ref('orders_calculations')}}
+{{ orders_xf() }}
