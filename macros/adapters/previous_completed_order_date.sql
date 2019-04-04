@@ -20,6 +20,6 @@
 {% macro default__previous_completed_order_date() %}
 
         lead(previous_completed_order_calc, 1) {{ignore_nulls}}  over (
-            partition by {{var('customer_aggregate_on')}} order by created_at))
+            partition by {{var('customer_aggregate_on')}} order by created_at)
 
 {% endmacro %}
