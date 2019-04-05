@@ -8,6 +8,7 @@
     )
 }}
 
+
 select
 {{
     dbt_utils.star(from=ref('orders_calculations'),
