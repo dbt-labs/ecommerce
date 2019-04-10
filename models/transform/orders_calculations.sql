@@ -78,7 +78,7 @@ calculation_1 as (
         count(*) over (partition by {{var('customer_aggregate_on')}})
             as lifetime_placed_orders,
         
-        sum(total_price) {{frame_clause}} as lifetime_revenue,
+        sum(coalesce(total_price, 0)) {{frame_clause}} as lifetime_revenue,
         
         --completed order values
 
