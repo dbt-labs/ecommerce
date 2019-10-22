@@ -9,3 +9,15 @@ target-path: "target"
 clean-targets:
     - "target"
     - "dbt_modules"
+
+models: 
+  fishtown_analytics_ecommerce:
+    vars:
+      addresses_table: TABLE OR {{ REF }}
+      customers_table: TABLE OR {{ REF }}
+      order_items_table: TABLE OR {{ REF }}
+      orders_table: TABLE OR {{ REF }}
+      products_table: TABLE OR {{ REF }}
+      customer_aggregate_on: customer_id or email
+      customer_join_on: customer_id or email
+      days: []
