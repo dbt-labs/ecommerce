@@ -60,6 +60,7 @@ order_numbers as (
         end as new_vs_repeat
 
     from fields
+    
 ),
 
 calculation_1 as (
@@ -171,6 +172,12 @@ date_diffs as (
 
 final_calculations as (
 
+    {% set days = 
+
+        var('days')
+    
+    %}
+
     select
 
         *,
@@ -180,35 +187,7 @@ final_calculations as (
             else 'non_purchaser'
         end as customer_type,
 
-        sum(case when days_from_first_completed_order <= 30 and is_completed = 1
-            then 1 else 0 end)
-            {{ frame_clause }}
-            as customer_first_30_day_completed_orders,
-
-        sum(case when days_from_first_completed_order <= 30 and is_completed = 1
-            then total_price else 0 end)
-            {{ frame_clause }}
-        as customer_first_30_day_revenue,
-
-        sum(case when days_from_first_completed_order <= 60 and is_completed = 1
-            then 1 else 0 end)
-            {{ frame_clause }}
-            as customer_first_60_day_completed_orders,
-
-        sum(case when days_from_first_completed_order <= 60 and is_completed = 1
-            then total_price else 0 end)
-            {{ frame_clause }}
-            as customer_first_60_day_revenue,
-
-        sum(case when days_from_first_completed_order <= 90 and is_completed = 1
-            then 1 else 0 end)
-            {{ frame_clause }}
-            as customer_first_90_day_completed_orders,
-
-        sum(case when days_from_first_completed_order <= 90 and is_completed = 1
-            then total_price else 0 end)
-            {{ frame_clause }}
-            as customer_first_90_day_revenue
+        {{ first_window_values ( days = days ) }}
 
     from date_diffs
     
