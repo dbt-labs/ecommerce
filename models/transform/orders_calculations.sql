@@ -1,15 +1,22 @@
 
-{% set order_seq_number = "row_number() over (partition by
-    {{var('customer_aggregate_on')}} order by created_at)" %}
+{% set order_seq_number -%}
+  row_number() over (partition by {{ var('customer_aggregate_on') }} order by created_at)
+{%- endset %}
 
-{% set frame_clause = "over (partition by {{var('customer_aggregate_on')}} order
-by created_at rows between unbounded preceding and unbounded following)" %}
+{% set frame_clause -%}
+  over (
+    partition by {{ var('customer_aggregate_on') }}
+    order by created_at rows between unbounded preceding and unbounded following
+  )
+{%- endset %}
 
-{% set window = "over (partition by {{var('customer_aggregate_on')}})" %}
+{% set window -%}
+  over (partition by {{ var('customer_aggregate_on') }})
+{%- endset %}
 
 with orders as (
 
-    select * from {{var('orders_table')}}
+    select * from {{ var('orders_table') }}
     
 ),
 
