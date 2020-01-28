@@ -61,8 +61,8 @@ order_numbers as (
         *,
         
         case
-            when completed_order_number = 1
-                then 'new'
+            when completed_order_number is null then null
+            when completed_order_number = 1 then 'new'
             else 'repeat'
         end as new_vs_repeat
 
