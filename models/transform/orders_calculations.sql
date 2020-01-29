@@ -61,9 +61,9 @@ order_numbers as (
         *,
         
         case
-            when completed_order_number is null then null
             when completed_order_number = 1 then 'new'
-            else 'repeat'
+            when completed_order_number is not null then 'repeat'
+            else null
         end as new_vs_repeat
 
     from fields
